@@ -13,9 +13,9 @@ function seededRand(seed: number) {
 
 const particles = Array.from({ length: 28 }, (_, i) => ({
   id: i,
-  top: `${seededRand(i * 5 + 0) * 95}%`,
-  left: `${seededRand(i * 5 + 1) * 95}%`,
-  size: seededRand(i * 5 + 2) * 2.5 + 1,
+  top: `${(seededRand(i * 5 + 0) * 95).toFixed(4)}%`,
+  left: `${(seededRand(i * 5 + 1) * 95).toFixed(4)}%`,
+  size: `${(seededRand(i * 5 + 2) * 2.5 + 1).toFixed(4)}px`,
   dur: seededRand(i * 5 + 3) * 4 + 3,
   delay: seededRand(i * 5 + 4) * 5,
   opacity: seededRand(i * 5 + 2) * 0.4 + 0.1,
@@ -30,12 +30,6 @@ const services = [
 
 const rotatingWords = ["Businesses", "Startups", "Individuals", "Corporates", "MSMEs"];
 
-const stats = [
-  { value: "500+", label: "Clients" },
-  { value: "15+", label: "Years" },
-  { value: "5000+", label: "Returns Filed" },
-  { value: "200+", label: "Incorporations" },
-];
 
 export default function Hero() {
   const [wordIndex, setWordIndex] = useState(0);
@@ -163,20 +157,6 @@ export default function Hero() {
               </a>
             </motion.div>
 
-            {/* Stats strip */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-              className="flex gap-8 pt-2 border-t border-white/10"
-            >
-              {stats.map((s) => (
-                <div key={s.label}>
-                  <p className="text-2xl font-black text-white">{s.value}</p>
-                  <p className="text-white/40 text-xs mt-0.5">{s.label}</p>
-                </div>
-              ))}
-            </motion.div>
           </div>
 
           {/* ── Right ── */}
@@ -224,7 +204,7 @@ export default function Hero() {
                 <motion.div
                   key={label}
                   className="absolute z-20 flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 shadow-lg"
-                  style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)`, transform: "translate(-50%,-50%)" }}
+                  style={{ left: `calc(50% + ${x.toFixed(3)}px)`, top: `calc(50% + ${y.toFixed(3)}px)`, transform: "translate(-50%,-50%)" }}
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.7 + i * 0.15, duration: 0.6, type: "spring", stiffness: 200 }}

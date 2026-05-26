@@ -112,7 +112,8 @@ export default function About() {
               ))}
             </motion.div>
 
-            <div className="flex items-center gap-4">
+            {/* Buttons — desktop only (lg+) */}
+            <div className="hidden lg:flex items-center gap-4">
               <a
                 href="#contact"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg gradient-gold text-white font-medium text-sm hover:opacity-90 transition-opacity shadow-md"
@@ -205,6 +206,24 @@ export default function About() {
               ))}
             </motion.div>
           </motion.div>
+        </div>
+
+        {/* Buttons — mobile/tablet only (below lg) */}
+        <div className="flex lg:hidden items-center gap-4 mt-8">
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg gradient-gold text-white font-medium text-sm hover:opacity-90 transition-opacity shadow-md"
+          >
+            <Users className="w-4 h-4" />
+            Meet the Team
+          </a>
+          <Link
+            href="/about"
+            className="inline-flex items-center gap-1.5 text-sm text-amber-600 hover:text-amber-700 font-medium group"
+          >
+            Know More
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
       </div>
     </section>

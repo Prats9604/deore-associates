@@ -146,21 +146,18 @@ export default function Contact() {
 
             {/* Map placeholder */}
             <motion.div
-              className="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 h-48 flex items-center justify-center"
+              className="rounded-2xl overflow-hidden border border-gray-200 h-48"
               variants={slideFromLeft}
             >
-              <div className="text-center space-y-2">
-                <MapPin className="w-8 h-8 text-amber-500 mx-auto" />
-                <p className="text-gray-500 text-sm">FC Road, Pune</p>
-                <a
-                  href="https://maps.google.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-amber-600 text-xs font-medium underline underline-offset-2"
-                >
-                  Open in Google Maps →
-                </a>
-              </div>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3748.9!2d73.77460!3d20.00565!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjDCsDAwJzIwLjMiTiA3M8KwNDYnMjguNiJF!5e0!3m2!1sen!2sin!4v1700000000000"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
             </motion.div>
           </motion.div>
 

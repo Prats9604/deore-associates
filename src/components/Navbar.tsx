@@ -39,9 +39,9 @@ const drawerItemVariants = {
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeHash, setActiveHash] = useState("#home");
   const pathname = usePathname();
   const isHome = pathname === "/";
-  // On non-home pages the navbar is always over a light background
   const isDark = isHome && !scrolled;
 
   useEffect(() => {
@@ -50,17 +50,46 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Resolve the href for each link depending on current page
+  // Track active section via IntersectionObserver on home page
+  useEffect(() => {
+    if (!isHome) return;
+    const ids = navLinks.filter((l) => l.hash).map((l) => l.hash!.replace("#", ""));
+    const observers: IntersectionObserver[] = [];
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveHash(`#${id}`); },
+        { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, [isHome]);
+
   function resolveHref(link: (typeof navLinks)[0]) {
-    if (link.hash === null) return link.page; // e.g. /about
-    if (isHome) return link.hash;             // on home: #services
-    return `/${link.hash}`;                   // on /about: /#services
+    if (link.hash === null) return link.page;
+    if (isHome) return link.hash;
+    return `/${link.hash}`;
   }
 
-  const linkClass = () =>
-    `px-4 py-2 rounded-lg text-sm font-medium transition-all hover:bg-amber-50 hover:text-amber-700 ${
-      isDark ? "text-white/90 hover:bg-white/10 hover:text-white" : "text-gray-700"
+  function isActive(link: (typeof navLinks)[0]) {
+    if (link.hash === null) return pathname === link.page; // /about
+    return isHome && activeHash === link.hash;
+  }
+
+  function linkClass(link: (typeof navLinks)[0]) {
+    const active = isActive(link);
+    if (isDark) {
+      return `px-4 py-2 rounded-lg text-sm font-medium transition-all hover:bg-white/10 ${
+        active ? "text-amber-400" : "text-white/80 hover:text-white"
+      }`;
+    }
+    return `px-4 py-2 rounded-lg text-sm font-medium transition-all hover:bg-amber-50 hover:text-amber-700 ${
+      active ? "text-amber-600" : "text-gray-600"
     }`;
+  }
 
   return (
     <motion.header
@@ -98,10 +127,17 @@ export default function Navbar() {
             animate="visible"
           >
             {navLinks.map((link) => (
-              <motion.div key={link.label} variants={navItemVariants}>
-                <Link href={resolveHref(link)} className={linkClass()}>
+              <motion.div key={link.label} variants={navItemVariants} className="relative">
+                <Link href={resolveHref(link)} className={linkClass(link)}>
                   {link.label}
                 </Link>
+                {isActive(link) && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute -bottom-0.5 left-3 right-3 h-0.5 rounded-full bg-amber-400"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </motion.div>
             ))}
           </motion.nav>
@@ -126,7 +162,7 @@ export default function Navbar() {
                 <Menu className="w-6 h-6" />
               </span>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72 p-0">
+            <SheetContent side="right" className="w-72 p-0 border-0" showCloseButton={false}>
               <div className="gradient-navy p-6 pb-4">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
@@ -152,7 +188,11 @@ export default function Navbar() {
                     <Link
                       href={resolveHref(link)}
                       onClick={() => setOpen(false)}
-                      className="block px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-colors"
+                      className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                        isActive(link)
+                          ? "text-amber-600 bg-amber-50 font-semibold"
+                          : "text-gray-700 hover:bg-amber-50 hover:text-amber-700"
+                      }`}
                     >
                       {link.label}
                     </Link>
